@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="app_bar_height">200dp</dimen>
+    <dimen name="item_width">200dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
+    <dimen name="large_text_margin">24dp</dimen>
+    <dimen name="edit_text">50dp</dimen>
+    <dimen name="edit_text_large">150dp</dimen>
+    <dimen name="small">50dp</dimen>
+    <dimen name="large">110dp</dimen>
+    <dimen name="xtralarge">170dp</dimen>
+    <dimen name="padding">10dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+</resources>

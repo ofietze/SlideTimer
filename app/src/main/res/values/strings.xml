@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">TimeSlide</string>
+    <string name="title_slide_detail">Slide Detail</string>
+    <string name="title"> Slides</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="welcome">Welcome to Timeslide!</string>
+    <string name="duration">Duration of your presentation (minutes)</string>
+    <string name="slides">Number of slides</string>
+    <string name="about">About</string>
+    <string name="Slide_Title">Slide Title</string>
+    <string name="slide_duration">Slide Duration</string>
+    <string name="slide_desc">Slide Description</string>
+    <string name="title_activity_slide_list">SlideListActivity</string>
+</resources>
