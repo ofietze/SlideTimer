@@ -13,6 +13,7 @@
         android:id="@+id/edit_slideduration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?attr/textAppearanceListItem"
-        android:layout_below="@+id/edit_title"/>
+        android:layout_below="@+id/edit_title"
+        android:inputType="number"
+        android:textAppearance="?attr/textAppearanceListItem" />
 </RelativeLayout>

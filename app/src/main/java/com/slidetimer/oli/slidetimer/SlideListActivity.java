@@ -43,6 +43,7 @@ public class SlideListActivity extends AppCompatActivity {
 
         listView.setAdapter(adapter);
 
+        //TODO Make list rows editable and save user input as slide objects
         /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
            @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
