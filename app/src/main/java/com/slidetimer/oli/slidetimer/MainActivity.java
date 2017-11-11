@@ -12,8 +12,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private EditText durationInput;
     private EditText slidesInput;
-    public int duration;
-    public int slides;
+    private int duration;
+    private int slides;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,16 +30,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
 
-        if (v.getId()== R.id.fab){          //if button is clicked
+        if (v.getId()== R.id.fab){          //if button is clicked save user input
 
             duration = Integer.parseInt(durationInput.getText().toString());
             slides = Integer.parseInt(slidesInput.getText().toString());
-            SharedPreferences pref = getSharedPreferences("Presentation",0);//Save data for later use in shared prefs
-            SharedPreferences.Editor editor= pref.edit();
-            editor.putInt("duration", duration);
-            editor.putInt("slides", slides);
-            editor.commit();
 
-            startActivity(new Intent(this, SlideListActivity.class));}
+            Intent intent = new Intent(MainActivity.this, SlideListActivity.class);
+            intent.putExtra("duration", duration);
+            intent.putExtra("slides",slides);
+            startActivity(intent);
+        }
     }
 }
