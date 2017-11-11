@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,11 +21,9 @@ import android.widget.TextView;
 
 public class SlideListActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private int duration;
-    private int numOfSlides;
     private SlideListAdapter adapter;
-    private String name;
     private Bundle dataFromMain;
+    private Slide[] slideArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,22 +38,24 @@ public class SlideListActivity extends AppCompatActivity implements View.OnClick
 
         //load previous user inputs
         dataFromMain = getIntent().getExtras();
-        duration = dataFromMain.getInt("duration");
-        numOfSlides = dataFromMain.getInt("slides");
-        name = dataFromMain.getString("name");
+        int duration = dataFromMain.getInt("duration");
+        int numOfSlides = dataFromMain.getInt("numOfSlides");
+        String name = dataFromMain.getString("name");
 
         getSupportActionBar().setTitle(name);
 
-        double durationPerSlide =  Math.floor(duration/ (double)numOfSlides);
+        double durationPerSlide =  Math.floor(duration / (double) numOfSlides);
 
         //create an Array with numerated slides
-        String[] slideStringArray = new String[numOfSlides];
-        for (int i = 0; i < slideStringArray.length; i++){
-            slideStringArray[i] = "Slide " + (i+1);
+        slideArray = new Slide[numOfSlides];
+        String[] slideStrings = new String[numOfSlides];
+        for (int i = 0; i < slideArray.length; i++){
+            slideArray[i] = new Slide("Slide " + (i+1), durationPerSlide);
+            slideStrings[i] = "Slide " + (i+1);
         }
 
         //create new SlideListAdapter with newly created Array and average duration per slide
-        adapter = new SlideListAdapter(this, R.layout.slide_list_content,  slideStringArray, getLayoutInflater(), durationPerSlide);
+        adapter = new SlideListAdapter(this, R.layout.slide_list_content,  slideStrings, getLayoutInflater(), durationPerSlide, slideArray);
 
         listView.setAdapter(adapter);
 
@@ -63,13 +64,14 @@ public class SlideListActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onClick(View view) {
         if (view.getId()== R.id.fabList){   //if button is clicked save user input an dpack it into a bundle
-           View v =  adapter.getView(0, null, null);
-            EditText e = (EditText) v.findViewById(R.id.edit_title);
-            String test = e.getText().toString();
+
+            for (Slide s: slideArray){
+                Log.d("DEBUGGING",s.getTitle() + " " + s.getDuration());
+            }
 
             Intent intent = new Intent(SlideListActivity.this, PresentationActivity.class);
-            intent.putExtra("testString", test);
             intent.putExtra("bundle", dataFromMain);
+            intent.putExtra("slides", slideArray);
             startActivity(intent);
 
         }

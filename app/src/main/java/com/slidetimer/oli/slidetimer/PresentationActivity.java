@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,7 +35,9 @@ public class PresentationActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-    private int numofSlides;
+    private static int numOfSlides;
+    private double duration;
+    private Slide[] slides;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +50,13 @@ public class PresentationActivity extends AppCompatActivity {
 
         Bundle b = dataFromSlideList.getBundle("bundle");
         getSupportActionBar().setTitle(b.getString("name"));
+        //Log.d("slideStringTest", b.getString("testString"));
 
-        numofSlides = b.getInt("slides");
+        numOfSlides = b.getInt("numOfSlides");
+        duration = b.getDouble("duration");
+        slides = (Slide[]) getIntent().getSerializableExtra("slides");
+
+        for (Slide s: slides) Log.d("-DEBUGGING-", s.getTitle()+ " "+ s.getDuration());
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -122,7 +130,7 @@ public class PresentationActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_presentation, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER), numOfSlides));
             return rootView;
         }
     }
@@ -146,12 +154,12 @@ public class PresentationActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return numofSlides;
+            return numOfSlides;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            if (position < numofSlides) return "Slide: " + position;
+            if (position < numOfSlides) return "Slide: " + position;
             else return null;
         }
     }

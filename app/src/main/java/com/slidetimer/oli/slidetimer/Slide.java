@@ -1,10 +1,12 @@
 package com.slidetimer.oli.slidetimer;
 
+import java.io.Serializable;
+
 /**
  * Representing a Slide in a presentation. Has a modifiable title and duration.
  */
 
-public class Slide {
+public class Slide implements Serializable {
 
     String title;
     double duration;

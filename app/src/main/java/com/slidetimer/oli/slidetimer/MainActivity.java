@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText durationInput;
     private EditText slidesInput;
     private EditText presentationName;
-    private int duration;
+    private double duration;
     private int slides;
     private String name;
 
@@ -40,13 +40,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (v.getId()== R.id.fab){          //if button is clicked save user input
 
-            duration = Integer.parseInt(durationInput.getText().toString());
+            duration = Double.parseDouble(durationInput.getText().toString());
             slides = Integer.parseInt(slidesInput.getText().toString());
             name = presentationName.getText().toString();
 
             Intent intent = new Intent(MainActivity.this, SlideListActivity.class);
             intent.putExtra("duration", duration);
-            intent.putExtra("slides", slides);
+            intent.putExtra("numOfSlides", slides);
             intent.putExtra("name", name);
             startActivity(intent);
         }
