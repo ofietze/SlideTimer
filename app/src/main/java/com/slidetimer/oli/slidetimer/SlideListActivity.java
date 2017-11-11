@@ -30,7 +30,7 @@ public class SlideListActivity extends AppCompatActivity {
         SharedPreferences pref = getSharedPreferences("Presentation", 0);
         duration = pref.getInt("duration", 0);
         numOfSlides = pref.getInt("slides",0);
-        double durationPerSlide =  duration/ (double)numOfSlides;
+        double durationPerSlide =  Math.floor(duration/ (double)numOfSlides);
 
         //create an Array with numerated slides
         String[] slideStringArray = new String[numOfSlides];

@@ -12,8 +12,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private EditText durationInput;
     private EditText slidesInput;
-    public static int duration;
-    public static int slides;
+    public int duration;
+    public int slides;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
