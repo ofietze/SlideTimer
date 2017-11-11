@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class PresentationActivity extends AppCompatActivity {
@@ -36,7 +37,7 @@ public class PresentationActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
     private static int numOfSlides;
-    private double duration;
+    private static double duration;
     private Slide[] slides;
 
     @Override
@@ -131,6 +132,10 @@ public class PresentationActivity extends AppCompatActivity {
             View rootView = inflater.inflate(R.layout.fragment_presentation, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER), numOfSlides));
+
+            ProgressBar horizontalProg = (ProgressBar) rootView.findViewById(R.id.progressBarHor);
+            horizontalProg.setMax(numOfSlides);
+
             return rootView;
         }
     }

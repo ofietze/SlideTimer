@@ -38,7 +38,7 @@ public class SlideListActivity extends AppCompatActivity implements View.OnClick
 
         //load previous user inputs
         dataFromMain = getIntent().getExtras();
-        int duration = dataFromMain.getInt("duration");
+        double duration = dataFromMain.getDouble("duration");
         int numOfSlides = dataFromMain.getInt("numOfSlides");
         String name = dataFromMain.getString("name");
 
