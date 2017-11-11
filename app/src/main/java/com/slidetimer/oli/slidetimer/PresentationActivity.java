@@ -34,6 +34,7 @@ public class PresentationActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    private int numofSlides;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +47,8 @@ public class PresentationActivity extends AppCompatActivity {
 
         Bundle b = dataFromSlideList.getBundle("bundle");
         getSupportActionBar().setTitle(b.getString("name"));
+
+        numofSlides = b.getInt("slides");
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -143,21 +146,13 @@ public class PresentationActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
-            return 3;
+            return numofSlides;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "SECTION 1";
-                case 1:
-                    return "SECTION 2";
-                case 2:
-                    return "SECTION 3";
-            }
-            return null;
+            if (position < numofSlides) return "Slide: " + position;
+            else return null;
         }
     }
 }
