@@ -12,19 +12,22 @@
     tools:context="com.slidetimer.oli.slidetimer.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <TextView
+    <EditText
+        android:id="@+id/edit_name"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/welcome"
-        android:textSize="@dimen/large_text_margin"
-        android:textAlignment="center"/>
+        android:layout_height="@dimen/edit_text"
+        android:layout_marginTop="@dimen/small"
+        android:hint="@string/name"
+        android:inputType="text"
+        android:textColor="@color/colorPrimary"
+        android:textColorHint="@color/colorAccent" />
 
     <EditText
         android:id="@+id/edit_duration"
         android:inputType="number"
         android:layout_width="match_parent"
         android:layout_height="@dimen/edit_text"
-        android:layout_marginTop="@dimen/small"
+        android:layout_marginTop="@dimen/large"
         android:hint="@string/duration"
         android:textColor="@color/colorPrimary"
         android:textColorHint="@color/colorAccent"/>
@@ -34,7 +37,7 @@
         android:inputType="number"
         android:layout_width="match_parent"
         android:layout_height="@dimen/edit_text"
-        android:layout_marginTop="@dimen/large"
+        android:layout_marginTop="@dimen/xtralarge"
         android:hint="@string/slides"
         android:textColor="@color/colorPrimary"
         android:textColorHint="@color/colorAccent"/>

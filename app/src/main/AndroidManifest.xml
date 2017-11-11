@@ -23,7 +23,11 @@
             android:name=".SlideListActivity"
             android:label="@string/title_activity_slide_list"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan"></activity>
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".PresentationActivity"
+            android:label="@string/title_activity_presentation"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

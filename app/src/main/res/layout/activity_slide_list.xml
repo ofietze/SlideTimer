@@ -4,14 +4,22 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="8dp"
-    android:paddingRight="8dp">
+    android:weightSum="1">
 
-    <ListView android:id="@+id/list"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbarList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:drawSelectorOnTop="false"/>
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme" />
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="wrap_content"
+        android:layout_height="357dp"
+        android:drawSelectorOnTop="true"
+        android:layout_weight="1" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabList"
@@ -20,6 +28,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         android:src="@android:drawable/ic_menu_save"
-        />
+        app:elevation="6dp" />
+
 </LinearLayout>
 

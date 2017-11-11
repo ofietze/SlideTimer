@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 
@@ -12,8 +13,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private EditText durationInput;
     private EditText slidesInput;
+    private EditText presentationName;
     private int duration;
     private int slides;
+    private String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,8 +26,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(this);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarMain);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(R.string.welcome);
+
         durationInput = (EditText) findViewById(R.id.edit_duration);
         slidesInput = (EditText) findViewById(R.id.edit_slides);
+        presentationName = (EditText) findViewById(R.id.edit_name);
     }
 
     @Override
@@ -34,10 +42,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             duration = Integer.parseInt(durationInput.getText().toString());
             slides = Integer.parseInt(slidesInput.getText().toString());
+            name = presentationName.getText().toString();
 
             Intent intent = new Intent(MainActivity.this, SlideListActivity.class);
             intent.putExtra("duration", duration);
-            intent.putExtra("slides",slides);
+            intent.putExtra("slides", slides);
+            intent.putExtra("name", name);
             startActivity(intent);
         }
     }
