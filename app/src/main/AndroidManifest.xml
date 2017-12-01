@@ -27,7 +27,20 @@
         <activity
             android:name=".PresentationActivity"
             android:label="@string/title_activity_presentation"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".slidemdfListActivity"
+            android:label="@string/title_slidemdf_list"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".slidemdfDetailActivity"
+            android:label="@string/title_slidemdf_detail"
+            android:parentActivityName=".slidemdfListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".slidemdfListActivity" />
+        </activity>
     </application>
 
 </manifest>

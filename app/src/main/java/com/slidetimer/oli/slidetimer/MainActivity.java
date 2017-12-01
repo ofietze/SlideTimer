@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             slides = Integer.parseInt(slidesInput.getText().toString());
             name = presentationName.getText().toString();
 
-            Intent intent = new Intent(MainActivity.this, SlideListActivity.class);
+            Intent intent = new Intent(MainActivity.this, slidemdfListActivity.class);
             intent.putExtra("duration", duration);
             intent.putExtra("numOfSlides", slides);
             intent.putExtra("name", name);

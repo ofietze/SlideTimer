@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,26 +47,6 @@ public class SlideListAdapter extends ArrayAdapter<String> {
         if (position < slideStrings.length) {
             holder.getTitleText().setHint(slideStrings[position]);
             holder.getDurationText().setHint(averageDurationSlide + " min");
-            holder.getDurationText().setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View view, boolean b) {
-                    if (!b && !((EditText) view).getText().toString().equals("")) {
-                        int slideIndex = view.getId();
-                        double enteredTime = Double.valueOf(((EditText) view).getText().toString());
-                        slideArray[position].setDuration(enteredTime);
-                    }
-                }
-            });
-            holder.getTitleText().setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View view, boolean b) {
-                    if (!b){
-                        int slideIndex = view.getId();
-                        String enteredTitle = ((EditText) view).getText().toString();
-                        slideArray[position].setTitle(enteredTitle);
-                    }
-                }
-            });
         }
         return convertView;
     }

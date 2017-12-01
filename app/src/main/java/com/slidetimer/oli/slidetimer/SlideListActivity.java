@@ -56,7 +56,15 @@ public class SlideListActivity extends AppCompatActivity implements View.OnClick
 
         //create new SlideListAdapter with newly created Array and average duration per slide
         adapter = new SlideListAdapter(this, R.layout.slide_list_content,  slideStrings, getLayoutInflater(), durationPerSlide, slideArray);
-
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                // call detail activity
+                Intent detailScreen = new Intent(getApplicationContext(), slidemdfListActivity.class);
+                detailScreen.putExtra("position", i);
+                startActivity(detailScreen);
+            }
+        });
         listView.setAdapter(adapter);
 
     }
