@@ -24,13 +24,13 @@ public class EditSlideDetailActivity extends AppCompatActivity {
         EditText editTitle = (EditText) findViewById(R.id.edit_slideTitle);
         EditText editDuration = (EditText) findViewById(R.id.edit_slideDuration);
 
-        Slide[] slides = slidemdfListActivity.slideArray;
-
-        editTitle.setHint(slides[position].getTitle());
-        editDuration.setHint(slides[position].getDuration() + " min");
-
         dataFromslidemdfDetailActivity = getIntent().getExtras();
         position = dataFromslidemdfDetailActivity.getInt("pos");
+
+        Slide slide = slidemdfListActivity.slideArray[position];
+
+        editTitle.setHint(slide.getTitle());
+        editDuration.setHint(slide.getDuration() + " min");
 
         String name = dataFromslidemdfDetailActivity.getString("name");
         getSupportActionBar().setTitle(name);

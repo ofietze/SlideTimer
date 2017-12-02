@@ -28,7 +28,7 @@ public class slidemdfDetailActivity extends AppCompatActivity implements View.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_slidemdf_detail);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarList);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);

@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import static com.slidetimer.oli.slidetimer.R.id.container;
+
 /**
  * A fragment representing a single slide_mdf detail screen.
  * This fragment is either contained in a {@link slidemdfListActivity}
@@ -54,11 +56,30 @@ public class slidemdfDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.slidemdf_detail, container, false);
 
-        // Show the dummy content as text in a TextView.
         if (aSlide != null) {
             ((TextView) rootView.findViewById(R.id.slidemdf_detail)).setText("Duration of this slide: " +aSlide.getDuration()+ " min");
         }
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getArguments().containsKey(ARG_ITEM_ID)) {
+            aSlide = slidemdfListActivity.slideArray[getArguments().getInt(ARG_ITEM_ID)];
+
+            //refresh title
+            Activity activity = this.getActivity();
+            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
+            if (appBarLayout != null) {
+                appBarLayout.setTitle(aSlide.getTitle());
+            }
+
+            //refresh duration
+            if (aSlide != null) {
+                ((TextView) getView().findViewById(R.id.slidemdf_detail)).setText("Duration of this slide: " +aSlide.getDuration()+ " min");
+            }
+        }
     }
 }

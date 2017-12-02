@@ -31,6 +31,8 @@ public class slidemdfListActivity extends AppCompatActivity implements View.OnCl
     private Bundle dataFromMain;
     public static Slide[] slideArray;
     private int numOfSlides;
+    private String name;
+    private double duration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +48,9 @@ public class slidemdfListActivity extends AppCompatActivity implements View.OnCl
 
         //load previous user inputs
         dataFromMain = getIntent().getExtras();
-        double duration = dataFromMain.getDouble("duration");
+        duration = dataFromMain.getDouble("duration");
         numOfSlides = dataFromMain.getInt("numOfSlides");
-        String name = dataFromMain.getString("name"); //TODO check if needed
+        name = dataFromMain.getString("name"); //TODO check if needed
 
         getSupportActionBar().setTitle(name);
 
@@ -72,6 +74,36 @@ public class slidemdfListActivity extends AppCompatActivity implements View.OnCl
             // activity should be in two-pane mode.
             mTwoPane = true;
         }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        //when back button is pressed and user returns to list: update list items
+
+        setContentView(R.layout.activity_slidemdf_list);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setTitle(getTitle());
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(this);
+
+        getSupportActionBar().setTitle(name);
+
+        View recyclerView = findViewById(R.id.slidemdf_list);
+        assert recyclerView != null;
+        setupRecyclerView((RecyclerView) recyclerView);
+
+        if (findViewById(R.id.slidemdf_detail_container) != null) {
+            // The detail container view will be present only in the
+            // large-screen layouts (res/values-w900dp).
+            // If this view is present, then the
+            // activity should be in two-pane mode.
+            mTwoPane = true;
+        }
+
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
@@ -107,7 +139,7 @@ public class slidemdfListActivity extends AppCompatActivity implements View.OnCl
         public void onBindViewHolder(final ViewHolder holder, final int position) {
             holder.aSlide = SIRV_slides[position];
             holder.sIdView.setText(Integer.toString(position));
-            holder.sContentView.setText(SIRV_slides[position].getTitle());
+            holder.sContentView.setText(SIRV_slides[position].getTitle() + " (" + SIRV_slides[position].getDuration()+"min)");
 
             holder.sView.setOnClickListener(new View.OnClickListener() {
                 @Override
