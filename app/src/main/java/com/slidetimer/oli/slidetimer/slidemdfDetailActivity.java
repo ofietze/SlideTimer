@@ -19,6 +19,10 @@ import android.widget.ListView;
  */
 public class slidemdfDetailActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private Bundle dataFromSlidemdfListActivity;
+    private int position;
+    private String name;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +33,9 @@ public class slidemdfDetailActivity extends AppCompatActivity implements View.On
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(this);
+        dataFromSlidemdfListActivity  = getIntent().getExtras();
+        position = dataFromSlidemdfListActivity.getInt(slidemdfDetailFragment.ARG_ITEM_ID);
+        name = dataFromSlidemdfListActivity.getBundle("dataBundle").getString("name");
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
@@ -49,14 +56,24 @@ public class slidemdfDetailActivity extends AppCompatActivity implements View.On
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(slidemdfDetailFragment.ARG_ITEM_ID,
-                    getIntent().getStringExtra(slidemdfDetailFragment.ARG_ITEM_ID));
+            arguments.putInt(slidemdfDetailFragment.ARG_ITEM_ID,
+                    getIntent().getIntExtra(slidemdfDetailFragment.ARG_ITEM_ID, 0));
             slidemdfDetailFragment fragment = new slidemdfDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.slidemdf_detail_container, fragment)
                     .commit();
         }
+    }
+
+    //if user wants to edit slides
+    @Override
+    public void onClick(View view) {
+        Intent intent = new Intent(slidemdfDetailActivity.this, EditSlideDetailActivity.class);
+        intent.putExtra("pos", position);
+        intent.putExtra("name", name);
+        startActivity(intent);
+
     }
 
     @Override
@@ -74,10 +91,5 @@ public class slidemdfDetailActivity extends AppCompatActivity implements View.On
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onClick(View view) {
-
     }
 }

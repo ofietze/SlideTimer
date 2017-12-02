@@ -17,4 +17,5 @@
     <string name="section_format">Slide: %1$d/%2$d</string>
     <string name="title_slidemdf_list">Slides</string>
     <string name="title_slidemdf_detail">slide_mdf Detail</string>
+    <string name="title_activity_edit_slide_detail">EditSlideDetailActivity</string>
 </resources>

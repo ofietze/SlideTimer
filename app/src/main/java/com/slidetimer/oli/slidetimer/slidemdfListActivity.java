@@ -8,16 +8,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.TextView;
-
-import com.slidetimer.oli.slidetimer.DummyContent;
-
-import java.util.List;
 
 /**
  * An activity representing a list of Slides. This activity
@@ -35,7 +29,8 @@ public class slidemdfListActivity extends AppCompatActivity implements View.OnCl
      */
     private boolean mTwoPane;
     private Bundle dataFromMain;
-    private Slide[] slideArray;
+    public static Slide[] slideArray;
+    private int numOfSlides;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +47,8 @@ public class slidemdfListActivity extends AppCompatActivity implements View.OnCl
         //load previous user inputs
         dataFromMain = getIntent().getExtras();
         double duration = dataFromMain.getDouble("duration");
-        int numOfSlides = dataFromMain.getInt("numOfSlides");
-        String name = dataFromMain.getString("name");
+        numOfSlides = dataFromMain.getInt("numOfSlides");
+        String name = dataFromMain.getString("name"); //TODO check if needed
 
         getSupportActionBar().setTitle(name);
 
@@ -80,21 +75,25 @@ public class slidemdfListActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(slideArray));
     }
 
+    //save entered user input and send it to next activity
     @Override
     public void onClick(View view) {
-
+        Intent intent = new Intent(slidemdfListActivity.this, PresentationActivity.class);
+        intent.putExtra("bundle", dataFromMain);
+        intent.putExtra("slides", slideArray);
+        startActivity(intent);
     }
 
     public class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
-        private final List<DummyContent.DummyItem> mValues;
+        private Slide[] SIRV_slides;
 
-        public SimpleItemRecyclerViewAdapter(List<DummyContent.DummyItem> items) {
-            mValues = items;
+        public SimpleItemRecyclerViewAdapter(Slide[] slides) {
+            SIRV_slides = slides;
         }
 
         @Override
@@ -105,17 +104,17 @@ public class slidemdfListActivity extends AppCompatActivity implements View.OnCl
         }
 
         @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.mItem = mValues.get(position);
-            holder.mIdView.setText(mValues.get(position).id);
-            holder.mContentView.setText(mValues.get(position).content);
+        public void onBindViewHolder(final ViewHolder holder, final int position) {
+            holder.aSlide = SIRV_slides[position];
+            holder.sIdView.setText(Integer.toString(position));
+            holder.sContentView.setText(SIRV_slides[position].getTitle());
 
-            holder.mView.setOnClickListener(new View.OnClickListener() {
+            holder.sView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (mTwoPane) {
                         Bundle arguments = new Bundle();
-                        arguments.putString(slidemdfDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+                        arguments.putInt(slidemdfDetailFragment.ARG_ITEM_ID, position);
                         slidemdfDetailFragment fragment = new slidemdfDetailFragment();
                         fragment.setArguments(arguments);
                         getSupportFragmentManager().beginTransaction()
@@ -124,8 +123,8 @@ public class slidemdfListActivity extends AppCompatActivity implements View.OnCl
                     } else {
                         Context context = v.getContext();
                         Intent intent = new Intent(context, slidemdfDetailActivity.class);
-                        intent.putExtra(slidemdfDetailFragment.ARG_ITEM_ID, holder.mItem.id);
-
+                        intent.putExtra(slidemdfDetailFragment.ARG_ITEM_ID, position);
+                        intent.putExtra("dataBundle", dataFromMain);
                         context.startActivity(intent);
                     }
                 }
@@ -134,25 +133,26 @@ public class slidemdfListActivity extends AppCompatActivity implements View.OnCl
 
         @Override
         public int getItemCount() {
-            return mValues.size();
+            return numOfSlides;
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
-            public final View mView;
-            public final TextView mIdView;
-            public final TextView mContentView;
-            public DummyContent.DummyItem mItem;
+
+            public final View sView;
+            public final TextView sIdView;
+            public final TextView sContentView;
+            public Slide aSlide;
 
             public ViewHolder(View view) {
                 super(view);
-                mView = view;
-                mIdView = (TextView) view.findViewById(R.id.id);
-                mContentView = (TextView) view.findViewById(R.id.content);
+                sView = view;
+                sIdView = (TextView) view.findViewById(R.id.id);
+                sContentView = (TextView) view.findViewById(R.id.content);
             }
 
             @Override
             public String toString() {
-                return super.toString() + " '" + mContentView.getText() + "'";
+                return super.toString() + " '" + sContentView.getText() + "'";
             }
         }
     }

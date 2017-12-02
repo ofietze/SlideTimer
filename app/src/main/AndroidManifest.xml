@@ -31,7 +31,7 @@
         <activity
             android:name=".slidemdfListActivity"
             android:label="@string/title_slidemdf_list"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".slidemdfDetailActivity"
             android:label="@string/title_slidemdf_detail"
@@ -41,6 +41,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".slidemdfListActivity" />
         </activity>
+        <activity
+            android:name=".EditSlideDetailActivity"
+            android:label="@string/title_activity_edit_slide_detail"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
