@@ -1,7 +1,10 @@
 package com.slidetimer.oli.slidetimer;
 
+import android.os.CountDownTimer;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -11,34 +14,27 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class PresentationActivity extends AppCompatActivity {
+public class PresentationActivity extends AppCompatActivity implements View.OnClickListener {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
-    private SectionsPagerAdapter mSectionsPagerAdapter;
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    private ViewPager mViewPager;
-    private static int numOfSlides;
-    private static double duration;
+    protected int numOfSlides;
+    private double duration;
     private Slide[] slides;
+    private int currentPos;
+    private TextView titleText;
+    private TextView timerText;
+    private ProgressBar slideProg;
+    private ProgressBar overallProg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,31 +47,38 @@ public class PresentationActivity extends AppCompatActivity {
 
         Bundle b = dataFromSlideList.getBundle("bundle");
         getSupportActionBar().setTitle(b.getString("name"));
-        //Log.d("slideStringTest", b.getString("testString"));
 
         numOfSlides = b.getInt("numOfSlides");
         duration = b.getDouble("duration");
-        slides = (Slide[]) getIntent().getSerializableExtra("slides");
+        slides = slidemdfListActivity.slideArray;
 
-        for (Slide s: slides) Log.d("-DEBUGGING-", s.getTitle()+ " "+ s.getDuration());
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        Button startStopBtn = (Button) findViewById(R.id.start_timer_btn);
+        Button nextBtn = (Button) findViewById(R.id.next_btn);
+        Button prevBtn = (Button) findViewById(R.id.prev_btn);
+        startStopBtn.setOnClickListener(this);
+        nextBtn.setOnClickListener(this);
+        prevBtn.setOnClickListener(this);
 
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
+        titleText = (TextView) findViewById(R.id.title_textView);
+        timerText = (TextView) findViewById(R.id.timer_textView);
 
+        slideProg = (ProgressBar) findViewById(R.id.progressBarSlide);
+        overallProg = (ProgressBar) findViewById(R.id.progressBarTotal);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        overallProg.setMax((int)duration);
 
+        //init view for first slide
+        currentPos = 0;
+        updateViewForSlide(currentPos);
+    }
+
+    //updates the textviews,progressbar etc. to show the information of the slide at "position"
+    public void updateViewForSlide(int position){
+        Slide currentSlide = slides[position];
+
+        titleText.setText(currentSlide.getTitle());
+        timerText.setText(currentSlide.getDuration() + " min");
+        slideProg.setMax((int) currentSlide.getDuration());
     }
 
 
@@ -101,71 +104,13 @@ public class PresentationActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        public PlaceholderFragment() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_presentation, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER), numOfSlides));
-
-            ProgressBar horizontalProg = (ProgressBar) rootView.findViewById(R.id.progressBarHor);
-            horizontalProg.setMax(numOfSlides);
-
-            return rootView;
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.next_btn: if (currentPos < numOfSlides -1)updateViewForSlide(++currentPos);break;
+            case R.id.prev_btn: if (currentPos > 0) updateViewForSlide(--currentPos);break;
+            case R.id.start_timer_btn: break;
         }
     }
 
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
-        }
-
-        @Override
-        public int getCount() {
-            return numOfSlides;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            if (position < numOfSlides) return "Slide: " + position;
-            else return null;
-        }
-    }
 }

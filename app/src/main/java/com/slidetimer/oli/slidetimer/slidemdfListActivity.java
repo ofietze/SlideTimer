@@ -76,36 +76,6 @@ public class slidemdfListActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        //when back button is pressed and user returns to list: update list items
-
-        setContentView(R.layout.activity_slidemdf_list);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setTitle(getTitle());
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(this);
-
-        getSupportActionBar().setTitle(name);
-
-        View recyclerView = findViewById(R.id.slidemdf_list);
-        assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView);
-
-        if (findViewById(R.id.slidemdf_detail_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
-            mTwoPane = true;
-        }
-
-    }
-
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(slideArray));
     }
@@ -115,7 +85,6 @@ public class slidemdfListActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View view) {
         Intent intent = new Intent(slidemdfListActivity.this, PresentationActivity.class);
         intent.putExtra("bundle", dataFromMain);
-        intent.putExtra("slides", slideArray);
         startActivity(intent);
     }
 
@@ -138,7 +107,7 @@ public class slidemdfListActivity extends AppCompatActivity implements View.OnCl
         @Override
         public void onBindViewHolder(final ViewHolder holder, final int position) {
             holder.aSlide = SIRV_slides[position];
-            holder.sIdView.setText(Integer.toString(position));
+            holder.sIdView.setText(Integer.toString(position+1));
             holder.sContentView.setText(SIRV_slides[position].getTitle() + " (" + SIRV_slides[position].getDuration()+"min)");
 
             holder.sView.setOnClickListener(new View.OnClickListener() {
@@ -187,5 +156,35 @@ public class slidemdfListActivity extends AppCompatActivity implements View.OnCl
                 return super.toString() + " '" + sContentView.getText() + "'";
             }
         }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        //when back button is pressed and user returns to list: update list items
+
+        setContentView(R.layout.activity_slidemdf_list);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setTitle(getTitle());
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(this);
+
+        getSupportActionBar().setTitle(name);
+
+        View recyclerView = findViewById(R.id.slidemdf_list);
+        assert recyclerView != null;
+        setupRecyclerView((RecyclerView) recyclerView);
+
+        if (findViewById(R.id.slidemdf_detail_container) != null) {
+            // The detail container view will be present only in the
+            // large-screen layouts (res/values-w900dp).
+            // If this view is present, then the
+            // activity should be in two-pane mode.
+            mTwoPane = true;
+        }
+
     }
 }

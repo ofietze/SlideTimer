@@ -24,7 +24,7 @@
 
     <EditText
         android:id="@+id/edit_duration"
-        android:inputType="number"
+        android:inputType="numberDecimal"
         android:layout_width="match_parent"
         android:layout_height="@dimen/edit_text"
         android:layout_marginTop="@dimen/large"
