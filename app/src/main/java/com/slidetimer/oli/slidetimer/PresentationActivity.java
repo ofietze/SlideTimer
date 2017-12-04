@@ -30,8 +30,11 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
     private Button startStopBtn;
     private boolean timerSlideRunning;
     private boolean timerTotalRunning;
+    private boolean paused;
     private CountDownTimer timerSlide;
     private CountDownTimer timerTotal;
+    private long secsUntilFinishedSlides;
+    private long secsUntilFinishedTotal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +73,7 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
         updateViewForSlide(currentPos);
         timerSlideRunning = false;
         timerTotalRunning = false;
+        paused = false;
     }
 
     //updates the textviews,progressbar etc. to show the information of the slide at "position"
@@ -104,22 +108,23 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
         return super.onOptionsItemSelected(item);
     }
 
-    public CountDownTimer makeTimerForCurrentSlide(){
-        final double duration = currentSlide.getDuration();
+    public CountDownTimer makeTimerForCurrentSlide(double dur){
+        final double duration = dur;
 
         CountDownTimer timer = new CountDownTimer((int) (duration * 60 * 1000), 1000) {
 
             @TargetApi(Build.VERSION_CODES.N)
             public void onTick(long millisUntilFinished) {
-                long secsUntilFinished = millisUntilFinished / 1000;
-                timerText.setText(secsUntilFinished +" - Seconds remaining: ");
-                slideProg.setProgress((int) (duration * 60 - secsUntilFinished), true);
+                secsUntilFinishedSlides = millisUntilFinished / 1000;
+                timerText.setText(secsUntilFinishedSlides +" - Seconds remaining: ");
+                slideProg.setProgress((int) (duration * 60 - secsUntilFinishedSlides), true);
             }
 
             public void onFinish() {
                 if (currentPos < numOfSlides-1) {
+                    //update view to next slide and instantly start it's timer
                     updateViewForSlide(++currentPos);
-                    timerSlide = makeTimerForCurrentSlide().start();
+                    timerSlide = makeTimerForCurrentSlide(currentSlide.getDuration()).start();
                 }
             }
         }.start();
@@ -136,6 +141,7 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
                 Slide currentSlide = slides[currentPos];
                 final double currentDuration = currentSlide.getDuration();
 
+                //timers are paused
                 if (timerSlideRunning || timerTotalRunning){
                     if (timerSlideRunning) {
                         timerSlide.cancel();
@@ -147,30 +153,58 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
                         timerTotalRunning = false;
                     }
                     startStopBtn.setText("Start");
+                    paused = true;
                 }
-                else{
-                    timerSlide = makeTimerForCurrentSlide();
-                    timerSlideRunning = true;
+                else {
+                    if (paused) {
+                        //resume from pause
+                        timerSlide = makeTimerForCurrentSlide((double) secsUntilFinishedSlides/60);
 
-                    //if we start the whole presentation, make custom timer for total duration
-                    if (currentPos == 0){
-                       timerTotal = new CountDownTimer((int) (totalDuration * 60 * 1000), 1000) {
+                        timerTotal = new CountDownTimer(secsUntilFinishedTotal * 1000, 1000) {
 
                             @TargetApi(Build.VERSION_CODES.N)
                             public void onTick(long millisUntilFinished) {
-                                long secsUntilFinished = millisUntilFinished / 1000;
-                                totalTimerText.setText(secsUntilFinished +" - Seconds total remaining: ");
-                                overallProg.setProgress((int) (totalDuration * 60 - secsUntilFinished), true);
+                                secsUntilFinishedTotal = millisUntilFinished / 1000;
+                                totalTimerText.setText(secsUntilFinishedTotal + " - Seconds total remaining: ");
+                                overallProg.setProgress((int) (totalDuration * 60 - secsUntilFinishedTotal), true);
                             }
 
                             public void onFinish() {
                                 totalTimerText.setText("Presentation time is over.");
                             }
                         }.start();
-                        timerTotalRunning = true;
+                        paused = false;
+                    } else {
+                        //first start
+                        timerSlide = makeTimerForCurrentSlide(currentDuration);
+
+                        //if we start the whole presentation, make custom timer for total duration
+                        if (currentPos == 0) {
+                            timerTotal = new CountDownTimer((int) (totalDuration * 60 * 1000), 1000) {
+
+                                @TargetApi(Build.VERSION_CODES.N)
+                                public void onTick(long millisUntilFinished) {
+                                    secsUntilFinishedTotal = millisUntilFinished / 1000;
+                                    totalTimerText.setText(secsUntilFinishedTotal + " - Seconds total remaining: ");
+                                    overallProg.setProgress((int) (totalDuration * 60 - secsUntilFinishedTotal), true);
+                                }
+
+                                public void onFinish() {
+                                    totalTimerText.setText("Presentation time is over.");
+                                }
+                            }.start();
+                        }
                     }
-                    startStopBtn.setText("Stop");
+                    timerSlideRunning = true;
+                    timerTotalRunning = true;
+                    startStopBtn.setText("Pause");
                 }
+                break;
+            case R.id.stop_timer_btn:
+                timerSlide.cancel();
+                timerTotal.cancel();
+                slideProg.setProgress(0);
+                overallProg.setProgress(0);
                 break;
         }
     }
