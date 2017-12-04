@@ -8,6 +8,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+
 public class EditSlideDetailActivity extends AppCompatActivity {
 
     private Bundle dataFromslidemdfDetailActivity;
@@ -20,6 +23,8 @@ public class EditSlideDetailActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        DecimalFormat df = new DecimalFormat("#.###");
+        df.setRoundingMode(RoundingMode.CEILING);
 
         EditText editTitle = (EditText) findViewById(R.id.edit_slideTitle);
         EditText editDuration = (EditText) findViewById(R.id.edit_slideDuration);
@@ -30,7 +35,7 @@ public class EditSlideDetailActivity extends AppCompatActivity {
         Slide slide = slidemdfListActivity.slideArray[position];
 
         editTitle.setHint(slide.getTitle());
-        editDuration.setHint(slide.getDuration() + " min");
+        editDuration.setHint(df.format(slide.getDuration()) + " min");
 
         String name = dataFromslidemdfDetailActivity.getString("name");
         getSupportActionBar().setTitle(name + " - Slide " + position+1);
@@ -46,6 +51,7 @@ public class EditSlideDetailActivity extends AppCompatActivity {
                 Slide editedSlide = slidemdfListActivity.slideArray[position];
                 editedSlide.setTitle(editTitle.getText().toString());
                 editedSlide.setDuration(Double.valueOf(editDuration.getText().toString()));
+                finish();
             }
         });
     }

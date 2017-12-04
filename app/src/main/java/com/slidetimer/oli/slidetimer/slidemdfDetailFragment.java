@@ -9,6 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+
 import static com.slidetimer.oli.slidetimer.R.id.container;
 
 /**
@@ -28,6 +31,7 @@ public class slidemdfDetailFragment extends Fragment {
      * The dummy content this fragment is presenting.
      */
     private Slide aSlide;
+    private DecimalFormat df;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -49,15 +53,18 @@ public class slidemdfDetailFragment extends Fragment {
                 appBarLayout.setTitle(aSlide.getTitle());
             }
         }
+        df = new DecimalFormat("#.###");
+        df.setRoundingMode(RoundingMode.CEILING);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View rootView = inflater.inflate(R.layout.slidemdf_detail, container, false);
 
         if (aSlide != null) {
-            ((TextView) rootView.findViewById(R.id.slidemdf_detail)).setText("Duration of this slide: " +aSlide.getDuration()+ " min");
+            ((TextView) rootView.findViewById(R.id.slidemdf_detail)).setText("Duration of this slide: " + df.format(aSlide.getDuration())+ " min");
         }
 
         return rootView;
@@ -78,7 +85,7 @@ public class slidemdfDetailFragment extends Fragment {
 
             //refresh duration
             if (aSlide != null) {
-                ((TextView) getView().findViewById(R.id.slidemdf_detail)).setText("Duration of this slide: " +aSlide.getDuration()+ " min");
+                ((TextView) getView().findViewById(R.id.slidemdf_detail)).setText("Duration of this slide: " +df.format(aSlide.getDuration())+ " min");
             }
         }
     }

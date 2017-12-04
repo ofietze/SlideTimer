@@ -13,6 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+
 /**
  * An activity representing a list of Slides. This activity
  * has different presentations for handset and tablet-size devices. On
@@ -54,7 +57,7 @@ public class slidemdfListActivity extends AppCompatActivity implements View.OnCl
 
         getSupportActionBar().setTitle(name);
 
-        double durationPerSlide =  Math.floor(duration / (double) numOfSlides);
+        double durationPerSlide = (duration / (double) numOfSlides);
 
         //create an Array with numerated slides
         slideArray = new Slide[numOfSlides];
@@ -106,9 +109,13 @@ public class slidemdfListActivity extends AppCompatActivity implements View.OnCl
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, final int position) {
+            //format to only display three decimal places
+            DecimalFormat df = new DecimalFormat("#.###");
+            df.setRoundingMode(RoundingMode.CEILING);
+
             holder.aSlide = SIRV_slides[position];
             holder.sIdView.setText(Integer.toString(position+1));
-            holder.sContentView.setText(SIRV_slides[position].getTitle() + " (" + SIRV_slides[position].getDuration()+"min)");
+            holder.sContentView.setText(SIRV_slides[position].getTitle() + " (" + df.format(SIRV_slides[position].getDuration())+"min)");
 
             holder.sView.setOnClickListener(new View.OnClickListener() {
                 @Override

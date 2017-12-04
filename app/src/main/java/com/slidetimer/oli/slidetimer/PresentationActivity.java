@@ -15,6 +15,11 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+
+import static android.R.color.white;
+
 public class PresentationActivity extends AppCompatActivity implements View.OnClickListener {
 
     protected int numOfSlides;
@@ -35,6 +40,7 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
     private CountDownTimer timerTotal;
     private long secsUntilFinishedSlides;
     private long secsUntilFinishedTotal;
+    private int redAlarmBoundary;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +61,11 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
         startStopBtn = (Button) findViewById(R.id.start_timer_btn);
         Button nextBtn = (Button) findViewById(R.id.next_btn);
         Button prevBtn = (Button) findViewById(R.id.prev_btn);
+        Button stopBtn = (Button) findViewById(R.id.stop_timer_btn);
         startStopBtn.setOnClickListener(this);
         nextBtn.setOnClickListener(this);
         prevBtn.setOnClickListener(this);
+        stopBtn.setOnClickListener(this);
 
         titleText = (TextView) findViewById(R.id.title_textView);
         timerText = (TextView) findViewById(R.id.timer_textView);
@@ -74,15 +82,21 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
         timerSlideRunning = false;
         timerTotalRunning = false;
         paused = false;
+        redAlarmBoundary = 25;
     }
 
     //updates the textviews,progressbar etc. to show the information of the slide at "position"
     public void updateViewForSlide(int position){
+        //format to only display three decimal places
+        DecimalFormat df = new DecimalFormat("#.###");
+        df.setRoundingMode(RoundingMode.CEILING);
+
         currentSlide = slides[position];
 
         titleText.setText(currentSlide.getTitle());
-        timerText.setText(currentSlide.getDuration() + " min");
+        timerText.setText(df.format(currentSlide.getDuration()) + " min for this slide");
         slideProg.setMax((int) (currentSlide.getDuration() * 60));
+        if (!(timerSlideRunning && timerTotalRunning)) totalTimerText.setText(df.format(totalDuration)+ " min total");
     }
 
 
@@ -118,6 +132,10 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
                 secsUntilFinishedSlides = millisUntilFinished / 1000;
                 timerText.setText(secsUntilFinishedSlides +" - Seconds remaining: ");
                 slideProg.setProgress((int) (duration * 60 - secsUntilFinishedSlides), true);
+
+                //change background color of progressbar if time is running out
+                if (secsUntilFinishedSlides < redAlarmBoundary) slideProg.setBackgroundColor(getResources().getColor(R.color.colorRedAlarm));
+                else slideProg.setBackgroundColor(getResources().getColor(white));
             }
 
             public void onFinish() {
@@ -125,6 +143,10 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
                     //update view to next slide and instantly start it's timer
                     updateViewForSlide(++currentPos);
                     timerSlide = makeTimerForCurrentSlide(currentSlide.getDuration()).start();
+                }
+                //if presentation is over because last slide is over
+                if (currentPos == numOfSlides -1){
+                    timerText.setText("Presentation time is over.");
                 }
             }
         }.start();
@@ -135,7 +157,14 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
     @Override
     public void onClick(View view) {
         switch (view.getId()){
-            case R.id.next_btn: if (currentPos < numOfSlides -1)updateViewForSlide(++currentPos);break;
+            case R.id.next_btn:
+                //if we are skipping pages while presenting update and cancel timers accordingly
+                if (currentPos < numOfSlides -1){
+                    updateViewForSlide(++currentPos);
+                    timerSlide.cancel();
+                    timerSlide = makeTimerForCurrentSlide(currentSlide.getDuration()).start();
+                }
+                break;
             case R.id.prev_btn: if (currentPos > 0) updateViewForSlide(--currentPos);break;
             case R.id.start_timer_btn:
                 Slide currentSlide = slides[currentPos];
@@ -167,6 +196,9 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
                                 secsUntilFinishedTotal = millisUntilFinished / 1000;
                                 totalTimerText.setText(secsUntilFinishedTotal + " - Seconds total remaining: ");
                                 overallProg.setProgress((int) (totalDuration * 60 - secsUntilFinishedTotal), true);
+
+                                if (secsUntilFinishedTotal < redAlarmBoundary) overallProg.setBackgroundColor(getResources().getColor(R.color.colorRedAlarm));
+                                else overallProg.setBackgroundColor(getResources().getColor(white));
                             }
 
                             public void onFinish() {
@@ -187,6 +219,9 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
                                     secsUntilFinishedTotal = millisUntilFinished / 1000;
                                     totalTimerText.setText(secsUntilFinishedTotal + " - Seconds total remaining: ");
                                     overallProg.setProgress((int) (totalDuration * 60 - secsUntilFinishedTotal), true);
+
+                                    if (secsUntilFinishedTotal < redAlarmBoundary) overallProg.setBackgroundColor(getResources().getColor(R.color.colorRedAlarm));
+                                    else overallProg.setBackgroundColor(getResources().getColor(white));
                                 }
 
                                 public void onFinish() {
@@ -205,6 +240,11 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
                 timerTotal.cancel();
                 slideProg.setProgress(0);
                 overallProg.setProgress(0);
+                overallProg.setBackgroundColor(getResources().getColor(white));
+                slideProg.setBackgroundColor(getResources().getColor(white));
+                paused = false;
+                currentPos = 0;
+                updateViewForSlide(currentPos);
                 break;
         }
     }
