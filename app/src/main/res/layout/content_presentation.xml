@@ -21,19 +21,27 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/title_textView" />
 
-    <ProgressBar
-        android:id="@+id/progressBarTotal"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/title_textView"
-        android:layout_alignBottom="@id/progressBarTotal"/>
-
     <TextView
         android:id="@+id/timer_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/progressBarSlide"
         android:text="time" />
+
+    <ProgressBar
+        android:id="@+id/progressBarTotal"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/timer_textView"
+        android:layout_alignBottom="@id/progressBarTotal"/>
+
+    <TextView
+        android:id="@+id/timer_total_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/progressBarTotal"
+        android:text="time" />
+
 
 </RelativeLayout>
