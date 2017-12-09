@@ -49,6 +49,7 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
     private long secsUntilFinishedTotal;
     private int alarmBoundary;
     private boolean notified;
+    private NotificationManager mNotificationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +92,8 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
         timerTotalRunning = false;
         paused = false;
         alarmBoundary = 25;
+
+        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notified = false;
     }
 
@@ -156,11 +159,13 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
                 if (currentPos < numOfSlides-1) {
                     //update view to next slide and instantly start it's timer
                     updateViewForSlide(++currentPos);
+                    timerSlide.cancel();
                     timerSlide = makeTimerForCurrentSlide(currentSlide.getDuration()).start();
                 }
                 //if presentation is over because last slide is over
                 if (currentPos == numOfSlides -1){
                     timerText.setText("Presentation time is over.");
+                    mNotificationManager.cancelAll();
                 }
             }
         }.start();
@@ -199,8 +204,6 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
         mBuilder.setContentIntent(resultPendingIntent);
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
     // mNotificationId is a unique integer your app uses to identify the
     // notification. For example, to cancel the notification, you can pass its ID
@@ -208,7 +211,6 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
         int mNotificationId = currentPos;
 
         mNotificationManager.notify(mNotificationId, mBuilder.build());
-
         notified = true;
     }
 
@@ -219,6 +221,7 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
                 //if we are skipping pages while presenting update and cancel timers accordingly
                 if (currentPos < numOfSlides -1){
                     updateViewForSlide(++currentPos);
+
                     timerSlide.cancel();
                     timerSlide = makeTimerForCurrentSlide(currentSlide.getDuration()).start();
                 }
@@ -312,6 +315,8 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
                 paused = false;
                 currentPos = 0;
                 updateViewForSlide(currentPos);
+
+                mNotificationManager.cancelAll();
                 break;
         }
     }
