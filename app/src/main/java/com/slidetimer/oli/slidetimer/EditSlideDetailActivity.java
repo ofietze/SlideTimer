@@ -38,7 +38,7 @@ public class EditSlideDetailActivity extends AppCompatActivity {
         editDuration.setHint(df.format(slide.getDuration()) + " min");
 
         String name = dataFromslidemdfDetailActivity.getString("name");
-        getSupportActionBar().setTitle(name + " - Slide " + position+1);
+        getSupportActionBar().setTitle(name + " - Slide " + (position+1));
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

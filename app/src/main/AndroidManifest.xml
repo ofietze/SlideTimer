@@ -40,6 +40,7 @@
             android:name=".EditSlideDetailActivity"
             android:label="@string/title_activity_edit_slide_detail"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-    </application>
 
+    </application>
+    <uses-permission android:name="android.permission.VIBRATE" />
 </manifest>

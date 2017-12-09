@@ -1,9 +1,16 @@
 package com.slidetimer.oli.slidetimer;
 
 import android.annotation.TargetApi;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
 
 import android.os.Bundle;
@@ -40,7 +47,8 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
     private CountDownTimer timerTotal;
     private long secsUntilFinishedSlides;
     private long secsUntilFinishedTotal;
-    private int redAlarmBoundary;
+    private int alarmBoundary;
+    private boolean notified;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +90,8 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
         timerSlideRunning = false;
         timerTotalRunning = false;
         paused = false;
-        redAlarmBoundary = 25;
+        alarmBoundary = 25;
+        notified = false;
     }
 
     //updates the textviews,progressbar etc. to show the information of the slide at "position"
@@ -97,6 +106,8 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
         timerText.setText(df.format(currentSlide.getDuration()) + " min for this slide");
         slideProg.setMax((int) (currentSlide.getDuration() * 60));
         if (!(timerSlideRunning && timerTotalRunning)) totalTimerText.setText(df.format(totalDuration)+ " min total");
+
+        notified = false;
     }
 
 
@@ -133,8 +144,11 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
                 timerText.setText(secsUntilFinishedSlides +" - Seconds remaining: ");
                 slideProg.setProgress((int) (duration * 60 - secsUntilFinishedSlides), true);
 
-                //change background color of progressbar if time is running out
-                if (secsUntilFinishedSlides < redAlarmBoundary) slideProg.setBackgroundColor(getResources().getColor(R.color.colorRedAlarm));
+                //change background color of progressbar if time is running out and send Notification
+                if (secsUntilFinishedSlides < alarmBoundary){
+                    slideProg.setBackgroundColor(getResources().getColor(R.color.colorRedAlarm));
+                    if(!notified)makeNotificationForCurrentSlide();
+                }
                 else slideProg.setBackgroundColor(getResources().getColor(white));
             }
 
@@ -152,6 +166,50 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
         }.start();
 
         return timer;
+    }
+
+    //send Notification if user is running low on time
+    public void makeNotificationForCurrentSlide(){
+        Slide s = currentSlide;
+
+        // The id of the channel.
+        String CHANNEL_ID = "my_channel_01";
+        NotificationCompat.Builder mBuilder =
+               new NotificationCompat.Builder(this)
+                       .setSmallIcon(R.mipmap.ic_launcher)
+                       .setContentTitle(currentSlide.getTitle())
+                       .setContentText("Less than 25 seconds remaining on this slide.")
+                       .setPriority(NotificationCompat.PRIORITY_MAX)
+                       .setDefaults(Notification.DEFAULT_ALL);
+    // Creates an explicit intent for an Activity in your app
+        Intent resultIntent = new Intent(this, PresentationActivity.class);
+
+    // The stack builder object will contain an artificial back stack for the
+    // started Activity.
+    // This ensures that navigating backward from the Activity leads out of
+    // your app to the Home screen.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+    // Adds the back stack for the Intent (but not the Intent itself)
+        stackBuilder.addParentStack(PresentationActivity.class);
+    // Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        mBuilder.setContentIntent(resultPendingIntent);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+    // mNotificationId is a unique integer your app uses to identify the
+    // notification. For example, to cancel the notification, you can pass its ID
+    // number to NotificationManager.cancel().
+        int mNotificationId = currentPos;
+
+        mNotificationManager.notify(mNotificationId, mBuilder.build());
+
+        notified = true;
     }
 
     @Override
@@ -197,7 +255,10 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
                                 totalTimerText.setText(secsUntilFinishedTotal + " - Seconds total remaining: ");
                                 overallProg.setProgress((int) (totalDuration * 60 - secsUntilFinishedTotal), true);
 
-                                if (secsUntilFinishedTotal < redAlarmBoundary) overallProg.setBackgroundColor(getResources().getColor(R.color.colorRedAlarm));
+                                if (secsUntilFinishedTotal < alarmBoundary) {
+                                    overallProg.setBackgroundColor(getResources().getColor(R.color.colorRedAlarm));
+                                    if(!notified)makeNotificationForCurrentSlide();
+                                }
                                 else overallProg.setBackgroundColor(getResources().getColor(white));
                             }
 
@@ -220,7 +281,10 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
                                     totalTimerText.setText(secsUntilFinishedTotal + " - Seconds total remaining: ");
                                     overallProg.setProgress((int) (totalDuration * 60 - secsUntilFinishedTotal), true);
 
-                                    if (secsUntilFinishedTotal < redAlarmBoundary) overallProg.setBackgroundColor(getResources().getColor(R.color.colorRedAlarm));
+                                    if (secsUntilFinishedTotal < alarmBoundary) {
+                                        overallProg.setBackgroundColor(getResources().getColor(R.color.colorRedAlarm));
+                                        if(!notified)makeNotificationForCurrentSlide();
+                                    }
                                     else overallProg.setBackgroundColor(getResources().getColor(white));
                                 }
 
@@ -238,8 +302,11 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
             case R.id.stop_timer_btn:
                 timerSlide.cancel();
                 timerTotal.cancel();
+
+                startStopBtn.setText("Start");
                 slideProg.setProgress(0);
                 overallProg.setProgress(0);
+
                 overallProg.setBackgroundColor(getResources().getColor(white));
                 slideProg.setBackgroundColor(getResources().getColor(white));
                 paused = false;
