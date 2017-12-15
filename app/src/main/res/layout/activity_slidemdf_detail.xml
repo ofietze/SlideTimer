@@ -28,7 +28,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:titleTextColor="@color/dimmedWhite"/>
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
@@ -38,7 +39,8 @@
         android:id="@+id/slidemdf_detail_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:background="@color/dimmedWhite"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

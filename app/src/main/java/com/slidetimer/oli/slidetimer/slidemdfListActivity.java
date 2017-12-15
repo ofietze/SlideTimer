@@ -56,6 +56,8 @@ public class slidemdfListActivity extends AppCompatActivity implements View.OnCl
         name = dataFromMain.getString("name"); //TODO check if needed
 
         getSupportActionBar().setTitle(name);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         double durationPerSlide = (duration / (double) numOfSlides);
 
@@ -166,6 +168,12 @@ public class slidemdfListActivity extends AppCompatActivity implements View.OnCl
     }
 
     @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+    @Override
     protected void onRestart() {
         super.onRestart();
         //when back button is pressed and user returns to list: update list items
@@ -180,6 +188,8 @@ public class slidemdfListActivity extends AppCompatActivity implements View.OnCl
         fab.setOnClickListener(this);
 
         getSupportActionBar().setTitle(name);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         View recyclerView = findViewById(R.id.slidemdf_list);
         assert recyclerView != null;

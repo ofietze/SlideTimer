@@ -39,7 +39,13 @@
         <activity
             android:name=".EditSlideDetailActivity"
             android:label="@string/title_activity_edit_slide_detail"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".PresentationSettingsActivity"
+            android:label="@string/title"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
 
     </application>
     <uses-permission android:name="android.permission.VIBRATE" />

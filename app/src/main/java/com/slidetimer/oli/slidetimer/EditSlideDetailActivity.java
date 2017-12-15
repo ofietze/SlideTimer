@@ -48,6 +48,12 @@ public class EditSlideDetailActivity extends AppCompatActivity {
                 EditText editTitle = (EditText) findViewById(R.id.edit_slideTitle);
                 EditText editDuration = (EditText) findViewById(R.id.edit_slideDuration);
 
+                View parentLayout = findViewById(android.R.id.content);
+                if(editTitle.getText().toString().isEmpty() || editDuration.getText().toString().isEmpty()) {
+                    Snackbar.make(parentLayout, "Empty Text Field is not allowed.", Snackbar.LENGTH_LONG).show();
+                    return;
+                }
+
                 Slide editedSlide = slidemdfListActivity.slideArray[position];
                 editedSlide.setTitle(editTitle.getText().toString());
                 editedSlide.setDuration(Double.valueOf(editDuration.getText().toString()));

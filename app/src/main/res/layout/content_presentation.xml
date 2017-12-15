@@ -3,45 +3,45 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin">
-
-    <TextView
-        android:id="@+id/title_textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:text="title"/>
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@color/colorPrimary">
 
     <ProgressBar
         android:id="@+id/progressBarSlide"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
-        android:layout_height="15dp"
-        android:layout_below="@id/title_textView" />
+        android:layout_height="200dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="50dp"
+        android:progressDrawable="@drawable/circular_progress_bar" />
 
     <TextView
         android:id="@+id/timer_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/progressBarSlide"
-        android:text="time" />
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="55dp"
+        android:text="time"
+        android:textColor="@color/dimmedWhite"/>
 
     <ProgressBar
         android:id="@+id/progressBarTotal"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="20dp"
-        android:layout_below="@id/timer_textView"
-        android:layout_alignBottom="@id/progressBarTotal"/>
+        android:layout_alignParentBottom="true"
+        android:progressDrawable="@drawable/custom_progress_bar"/>
 
     <TextView
         android:id="@+id/timer_total_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/progressBarTotal"
-        android:text="time" />
+        android:layout_above="@id/progressBarTotal"
+        android:text="time"
+        android:textColor="@color/dimmedWhite"/>
 
 
 </RelativeLayout>

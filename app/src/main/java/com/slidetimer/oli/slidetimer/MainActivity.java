@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -39,6 +40,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
 
         if (v.getId()== R.id.fab){          //if button is clicked save user input
+
+            View parentLayout = findViewById(android.R.id.content);
+            if(durationInput.getText().toString().isEmpty() || slidesInput.getText().toString().isEmpty() || presentationName.getText().toString().isEmpty()) {
+                Snackbar.make(parentLayout, "Empty Text Field is not allowed.", Snackbar.LENGTH_LONG).show();
+                return;
+            }
 
             duration = Double.parseDouble(durationInput.getText().toString());
             slides = Integer.parseInt(slidesInput.getText().toString());
