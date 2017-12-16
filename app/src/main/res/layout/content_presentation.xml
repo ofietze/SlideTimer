@@ -10,11 +10,8 @@
         android:id="@+id/progressBarSlide"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
+        android:layout_height="300dp"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
         android:progressDrawable="@drawable/circular_progress_bar" />
 
@@ -43,5 +40,46 @@
         android:text="time"
         android:textColor="@color/dimmedWhite"/>
 
+
+    <android.widget.ImageButton
+        android:id="@+id/prev_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/progressBarSlide"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:src="@drawable/ic_skip_previous_black_24dp"
+        android:scaleType="fitXY"
+        android:background="@color/colorPrimary" />
+    <android.widget.ImageButton
+        android:id="@+id/start_timer_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/progressBarSlide"
+        android:layout_marginTop="-24dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_play_circle_filled_black_24dp"
+        android:background="@color/colorPrimary" />
+    <android.widget.ImageButton
+        android:id="@+id/next_btn"
+        android:layout_width="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/progressBarSlide"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_skip_next_black_24dp"
+        android:background="@color/colorPrimary" />
+    <android.widget.ImageButton
+        android:id="@+id/stop_timer_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/start_timer_btn"
+        android:layout_centerHorizontal="true"
+        android:scaleType="fitXY"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/ic_stop_24dp"
+        android:background="@color/colorPrimary" />
 
 </RelativeLayout>

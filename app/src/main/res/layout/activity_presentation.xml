@@ -35,30 +35,6 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <android.widget.Button
-        android:id="@+id/next_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center|end"
-        android:text="Next"  />
-    <android.widget.Button
-        android:id="@+id/prev_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Prev" />
-    <android.widget.Button
-        android:id="@+id/start_timer_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center"
-        android:text="Start" />
-    <android.widget.Button
-        android:id="@+id/stop_timer_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:text="Stop" />
 
 
 </android.support.design.widget.CoordinatorLayout>

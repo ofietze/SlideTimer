@@ -15,6 +15,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +23,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -41,7 +43,7 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
     private TextView totalTimerText;
     private ProgressBar slideProg;
     private ProgressBar overallProg;
-    private Button startStopBtn;
+    private ImageButton startStopBtn;
     private boolean timerSlideRunning;
     private boolean timerTotalRunning;
     private boolean paused;
@@ -65,7 +67,6 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
 
         Bundle b = dataFromSlideList.getBundle("bundle");
         presentationTitle = b.getString("name");
-        getSupportActionBar().setTitle(presentationTitle);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -73,10 +74,10 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
         totalDuration = b.getDouble("duration");
         slides = slidemdfListActivity.slideArray;
 
-        startStopBtn = (Button) findViewById(R.id.start_timer_btn);
-        Button nextBtn = (Button) findViewById(R.id.next_btn);
-        Button prevBtn = (Button) findViewById(R.id.prev_btn);
-        Button stopBtn = (Button) findViewById(R.id.stop_timer_btn);
+        startStopBtn = (ImageButton) findViewById(R.id.start_timer_btn);
+        ImageButton nextBtn = (ImageButton) findViewById(R.id.next_btn);
+        ImageButton prevBtn = (ImageButton) findViewById(R.id.prev_btn);
+        ImageButton stopBtn = (ImageButton) findViewById(R.id.stop_timer_btn);
         startStopBtn.setOnClickListener(this);
         nextBtn.setOnClickListener(this);
         prevBtn.setOnClickListener(this);
@@ -88,9 +89,11 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
         slideProg = (ProgressBar) findViewById(R.id.progressBarSlide);
         overallProg = (ProgressBar) findViewById(R.id.progressBarTotal);
 
+        /*
         Animation an = new RotateAnimation(0.0f, 90.0f, 250f, 273f);
         an.setFillAfter(true);
         slideProg.startAnimation(an);
+        */
 
         overallProg.setMax((int)(totalDuration * 60));
 
@@ -114,7 +117,7 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
 
         currentSlide = slides[position];
 
-        getSupportActionBar().setTitle(presentationTitle + " - " + currentSlide.getTitle());
+        getSupportActionBar().setTitle(currentSlide.getTitle() + " - " + presentationTitle);
 
         timerText.setText(df.format(currentSlide.getDuration()) + " min for this slide");
         slideProg.setMax((int) (currentSlide.getDuration() * 60));
@@ -169,7 +172,7 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
             @TargetApi(Build.VERSION_CODES.N)
             public void onTick(long millisUntilFinished) {
                 secsUntilFinishedSlides = millisUntilFinished / 1000;
-                timerText.setText(secsUntilFinishedSlides +" Seconds remaining: ");
+                timerText.setText( secsUntilFinishedSlides/60 + ":" + secsUntilFinishedSlides % 60);
                 slideProg.setProgress((int) (duration * 60 - secsUntilFinishedSlides), true);
 
                 //send notification if time for current slide is running out
@@ -248,9 +251,9 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.next_btn:
+                updateViewForSlide(++currentPos);
                 //if we are skipping pages while presenting update and cancel timers accordingly
-                if (currentPos < numOfSlides -1){
-                    updateViewForSlide(++currentPos);
+                if (currentPos < numOfSlides -1 && timerSlideRunning){
 
                     timerSlide.cancel();
                     timerSlide = makeTimerForCurrentSlide(currentSlide.getDuration()).start();
@@ -272,7 +275,7 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
                         timerTotal.cancel();
                         timerTotalRunning = false;
                     }
-                    startStopBtn.setText("Start");
+                    startStopBtn.setImageResource(R.drawable.ic_play_circle_filled_black_24dp);
                     paused = true;
                 }
                 else {
@@ -285,7 +288,7 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
                             @TargetApi(Build.VERSION_CODES.N)
                             public void onTick(long millisUntilFinished) {
                                 secsUntilFinishedTotal = millisUntilFinished / 1000;
-                                totalTimerText.setText(secsUntilFinishedTotal + " Seconds total remaining: ");
+                                totalTimerText.setText((int) secsUntilFinishedTotal/60 + ":" + secsUntilFinishedTotal % 60);
                                 overallProg.setProgress((int) (totalDuration * 60 - secsUntilFinishedTotal), true);
 
                                 if (secsUntilFinishedTotal < alarmBoundary) {
@@ -311,7 +314,7 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
                                 @TargetApi(Build.VERSION_CODES.N)
                                 public void onTick(long millisUntilFinished) {
                                     secsUntilFinishedTotal = millisUntilFinished / 1000;
-                                    totalTimerText.setText(secsUntilFinishedTotal + " Seconds total remaining: ");
+                                    totalTimerText.setText((int) secsUntilFinishedTotal/60 + ":" + secsUntilFinishedTotal % 60);
                                     overallProg.setProgress((int) (totalDuration * 60 - secsUntilFinishedTotal), true);
 
                                     if (secsUntilFinishedTotal < alarmBoundary) {
@@ -329,14 +332,14 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
                     }
                     timerSlideRunning = true;
                     timerTotalRunning = true;
-                    startStopBtn.setText("Pause");
+                    startStopBtn.setImageResource(R.drawable.ic_pause_circle_filled_black_24dp);
                 }
                 break;
             case R.id.stop_timer_btn:
-                timerSlide.cancel();
-                timerTotal.cancel();
+                if (timerSlideRunning) timerSlide.cancel();
+                if (timerTotalRunning) timerTotal.cancel();
 
-                startStopBtn.setText("Start");
+                startStopBtn.setImageResource(R.drawable.ic_play_circle_filled_black_24dp);
                 slideProg.setProgress(0);
                 overallProg.setProgress(0);
 
@@ -346,6 +349,9 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
                 updateViewForSlide(currentPos);
 
                 mNotificationManager.cancelAll();
+
+                timerTotalRunning = false;
+                timerTotalRunning = false;
                 break;
         }
     }
