@@ -10,35 +10,38 @@
         android:id="@+id/progressBarSlide"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="250dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
+        android:layout_centerVertical="true"
         android:progressDrawable="@drawable/circular_progress_bar" />
 
     <TextView
         android:id="@+id/timer_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="55dp"
-        android:text="time"
-        android:textColor="@color/dimmedWhite"/>
+        android:textSize="@dimen/large"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:textColor="@color/white"/>
 
     <ProgressBar
         android:id="@+id/progressBarTotal"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:layout_alignParentBottom="true"
+        android:layout_height="30dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="50dp"
         android:progressDrawable="@drawable/custom_progress_bar"/>
 
     <TextView
         android:id="@+id/timer_total_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/progressBarTotal"
-        android:text="time"
-        android:textColor="@color/dimmedWhite"/>
+        android:layout_below="@id/progressBarTotal"
+        android:textSize="@dimen/large_text_margin"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/white"/>
 
 
     <android.widget.ImageButton

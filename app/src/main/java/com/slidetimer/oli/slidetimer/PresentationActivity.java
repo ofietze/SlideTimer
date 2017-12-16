@@ -111,17 +111,19 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
 
     //updates the textviews,progressbar etc. to show the information of the slide at "position"
     public void updateViewForSlide(int position){
-        //format to only display three decimal places
-        DecimalFormat df = new DecimalFormat("#.###");
-        df.setRoundingMode(RoundingMode.CEILING);
 
         currentSlide = slides[position];
 
         getSupportActionBar().setTitle(currentSlide.getTitle() + " - " + presentationTitle);
 
-        timerText.setText(df.format(currentSlide.getDuration()) + " min for this slide");
+        DecimalFormat df = new DecimalFormat("##");
+        df.setRoundingMode(RoundingMode.CEILING);
+
+        int currentDurationFloored = (int) Math.floor(currentSlide.getDuration());
+        //complicated way to load time from a double value
+        timerText.setText( currentDurationFloored + ":" + df.format((currentSlide.getDuration() - currentDurationFloored) * 60));
         slideProg.setMax((int) (currentSlide.getDuration() * 60));
-        if (!(timerSlideRunning && timerTotalRunning)) totalTimerText.setText(df.format(totalDuration)+ " min total");
+        if (!(timerSlideRunning && timerTotalRunning)) totalTimerText.setText((int)totalDuration + ":" + df.format((totalDuration - (int)totalDuration) * 60));
 
         notified = false;
     }
@@ -167,7 +169,7 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
     public CountDownTimer makeTimerForCurrentSlide(double dur){
         final double duration = dur;
 
-        CountDownTimer timer = new CountDownTimer((int) (duration * 60 * 1000), 1000) {
+         timerSlide = new CountDownTimer((int) (duration * 60 * 1000), 1000) {
 
             @TargetApi(Build.VERSION_CODES.N)
             public void onTick(long millisUntilFinished) {
@@ -197,7 +199,7 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
             }
         }.start();
 
-        return timer;
+        return timerSlide;
     }
 
     //send Notification if user is running low on time
@@ -251,12 +253,13 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.next_btn:
-                updateViewForSlide(++currentPos);
                 //if we are skipping pages while presenting update and cancel timers accordingly
-                if (currentPos < numOfSlides -1 && timerSlideRunning){
-
-                    timerSlide.cancel();
-                    timerSlide = makeTimerForCurrentSlide(currentSlide.getDuration()).start();
+                if (currentPos < numOfSlides -1){
+                    updateViewForSlide(++currentPos);
+                    if (timerSlideRunning) {
+                        timerSlide.cancel();
+                        timerSlide = makeTimerForCurrentSlide(currentSlide.getDuration()).start();
+                    }
                 }
                 break;
             case R.id.prev_btn: if (currentPos > 0) updateViewForSlide(--currentPos);break;
