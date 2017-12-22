@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.NumberPicker;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -27,7 +28,16 @@ public class EditSlideDetailActivity extends AppCompatActivity {
         df.setRoundingMode(RoundingMode.CEILING);
 
         EditText editTitle = (EditText) findViewById(R.id.edit_slideTitle);
-        EditText editDuration = (EditText) findViewById(R.id.edit_slideDuration);
+        final NumberPicker hourPicker = (NumberPicker) findViewById(R.id.edit_pickHour);
+        final NumberPicker minutePicker = (NumberPicker) findViewById(R.id.edit_pickMin);
+        final NumberPicker secondPicker = (NumberPicker) findViewById(R.id.edit_pickSec);
+
+        hourPicker.setMaxValue(20);
+        hourPicker.setMinValue(0);
+        minutePicker.setMaxValue(59);
+        minutePicker.setMinValue(0);
+        secondPicker.setMaxValue(59);
+        secondPicker.setMinValue(0);
 
         dataFromslidemdfDetailActivity = getIntent().getExtras();
         position = dataFromslidemdfDetailActivity.getInt("pos");
@@ -35,7 +45,9 @@ public class EditSlideDetailActivity extends AppCompatActivity {
         Slide slide = slidemdfListActivity.slideArray[position];
 
         editTitle.setHint(slide.getTitle());
-        editDuration.setHint(df.format(slide.getDuration()) + " min");
+        hourPicker.setValue(slide.getHour());
+        minutePicker.setValue(slide.getMin());
+        secondPicker.setValue(slide.getSec());
 
         String name = dataFromslidemdfDetailActivity.getString("name");
         getSupportActionBar().setTitle(name + " - Slide " + (position+1));
@@ -46,17 +58,19 @@ public class EditSlideDetailActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 EditText editTitle = (EditText) findViewById(R.id.edit_slideTitle);
-                EditText editDuration = (EditText) findViewById(R.id.edit_slideDuration);
 
                 View parentLayout = findViewById(android.R.id.content);
-                if(editTitle.getText().toString().isEmpty() || editDuration.getText().toString().isEmpty()) {
-                    Snackbar.make(parentLayout, "Empty Text Field is not allowed.", Snackbar.LENGTH_LONG).show();
-                    return;
+
+                String slideTitle;
+                if(editTitle.getText().toString().isEmpty()) {
+                    slideTitle = editTitle.getHint().toString();
+                } else {
+                    slideTitle = editTitle.getText().toString();
                 }
 
                 Slide editedSlide = slidemdfListActivity.slideArray[position];
-                editedSlide.setTitle(editTitle.getText().toString());
-                editedSlide.setDuration(Double.valueOf(editDuration.getText().toString()));
+                editedSlide.setTitle(slideTitle);
+                editedSlide.setDuration(hourPicker.getValue(), minutePicker.getValue(), secondPicker.getValue());
                 finish();
             }
         });

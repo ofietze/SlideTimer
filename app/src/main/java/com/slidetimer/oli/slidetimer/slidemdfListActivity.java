@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.Locale;
 
 /**
  * An activity representing a list of Slides. This activity
@@ -35,7 +36,10 @@ public class slidemdfListActivity extends AppCompatActivity implements View.OnCl
     public static Slide[] slideArray;
     private int numOfSlides;
     private String name;
-    private double duration;
+    private String formatTitleAndTime;
+    private int durationTotalHour;
+    private int durationTotalMin;
+    private int durationTotalSec;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,21 +55,27 @@ public class slidemdfListActivity extends AppCompatActivity implements View.OnCl
 
         //load previous user inputs
         dataFromMain = getIntent().getExtras();
-        duration = dataFromMain.getDouble("duration");
+        durationTotalHour = dataFromMain.getInt("durationHour");
+        durationTotalMin = dataFromMain.getInt("durationMin");
+        durationTotalSec = dataFromMain.getInt("durationSec");
         numOfSlides = dataFromMain.getInt("numOfSlides");
-        name = dataFromMain.getString("name"); //TODO check if needed
+        name = dataFromMain.getString("name");
 
-        getSupportActionBar().setTitle(name);
+        int durationTotalInSec = durationTotalHour * 60 * 60 + durationTotalMin * 60 + durationTotalSec;
+
+        formatTitleAndTime = "%s - %02d:%02d:%02d";
+
+        getSupportActionBar().setTitle( String.format(Locale.ENGLISH, formatTitleAndTime , name, durationTotalHour ,durationTotalMin, durationTotalSec));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        double durationPerSlide = (duration / (double) numOfSlides);
+        double durationPerSlide = (durationTotalInSec / (double) numOfSlides);
 
         //create an Array with numerated slides
         slideArray = new Slide[numOfSlides];
 
         for (int i = 0; i < slideArray.length; i++){
-            slideArray[i] = new Slide("Slide " + (i+1), durationPerSlide);
+            slideArray[i] = new Slide("Slide " + (i+1), (int)durationPerSlide/3600 , (int)durationPerSlide/60, (int)durationPerSlide % 60 );
         }
 
         View recyclerView = findViewById(R.id.slidemdf_list);
@@ -89,7 +99,15 @@ public class slidemdfListActivity extends AppCompatActivity implements View.OnCl
     @Override
     public void onClick(View view) {
         Intent intent = new Intent(slidemdfListActivity.this, PresentationActivity.class);
-        intent.putExtra("bundle", dataFromMain);
+
+        Bundle b = new Bundle();
+        b.putInt("durationHour", durationTotalHour);
+        b.putInt("durationMin", durationTotalMin);
+        b.putInt("durationSec", durationTotalSec);
+        b.putInt("numOfSlides", numOfSlides);
+        b.putString("name", name);
+
+        intent.putExtra("bundle", b);
         startActivity(intent);
     }
 
@@ -111,13 +129,11 @@ public class slidemdfListActivity extends AppCompatActivity implements View.OnCl
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, final int position) {
-            //format to only display three decimal places
-            DecimalFormat df = new DecimalFormat("#.###");
-            df.setRoundingMode(RoundingMode.CEILING);
+            Slide s = SIRV_slides[position];
 
-            holder.aSlide = SIRV_slides[position];
+            holder.aSlide = s;
             holder.sIdView.setText(Integer.toString(position+1));
-            holder.sContentView.setText(SIRV_slides[position].getTitle() + " (" + df.format(SIRV_slides[position].getDuration())+"min)");
+            holder.sContentView.setText(String.format(Locale.ENGLISH, formatTitleAndTime, SIRV_slides[position].getTitle(), s.getHour(), s.getMin(), s.getSec()));
 
             holder.sView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -176,7 +192,7 @@ public class slidemdfListActivity extends AppCompatActivity implements View.OnCl
     @Override
     protected void onRestart() {
         super.onRestart();
-        //when back button is pressed and user returns to list: update list items
+        //when back button is pressed and user returns to list: update list items and update total time
 
         setContentView(R.layout.activity_slidemdf_list);
 
@@ -187,7 +203,25 @@ public class slidemdfListActivity extends AppCompatActivity implements View.OnCl
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(this);
 
-        getSupportActionBar().setTitle(name);
+        //update total time with potentially new values
+        durationTotalSec = 0;
+        durationTotalMin= 0;
+        durationTotalHour = 0;
+
+        for (Slide s: slideArray) {
+            durationTotalSec += s.getSec();
+            durationTotalMin += s.getMin();
+            durationTotalHour += s.getHour();
+        }
+
+        durationTotalMin += durationTotalSec/60;
+        durationTotalSec = durationTotalSec % 60;
+
+        durationTotalHour += durationTotalMin/60;
+        durationTotalMin = durationTotalMin % 60;
+
+
+        getSupportActionBar().setTitle( String.format(Locale.ENGLISH, formatTitleAndTime , name, durationTotalHour ,durationTotalMin, durationTotalSec));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 

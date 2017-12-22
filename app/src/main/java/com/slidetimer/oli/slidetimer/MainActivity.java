@@ -7,17 +7,19 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.format.Time;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.NumberPicker;
+import android.widget.TimePicker;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
-    private EditText durationInput;
+    private NumberPicker hourPicker;
+    private NumberPicker minutePicker;
+    private NumberPicker secondPicker;
     private EditText slidesInput;
     private EditText presentationName;
-    private double duration;
-    private int slides;
-    private String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +33,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.welcome);
 
-        durationInput = (EditText) findViewById(R.id.edit_duration);
+        hourPicker = (NumberPicker) findViewById(R.id.pickHour);
+        minutePicker = (NumberPicker) findViewById(R.id.pickMin);
+        secondPicker = (NumberPicker) findViewById(R.id.pickSec);
         slidesInput = (EditText) findViewById(R.id.edit_slides);
         presentationName = (EditText) findViewById(R.id.edit_name);
+
+        hourPicker.setMaxValue(20);
+        hourPicker.setMinValue(0);
+        minutePicker.setMaxValue(59);
+        minutePicker.setMinValue(0);
+        secondPicker.setMaxValue(59);
+        secondPicker.setMinValue(0);
     }
 
     @Override
@@ -42,17 +53,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (v.getId()== R.id.fab){          //if button is clicked save user input
 
             View parentLayout = findViewById(android.R.id.content);
-            if(durationInput.getText().toString().isEmpty() || slidesInput.getText().toString().isEmpty() || presentationName.getText().toString().isEmpty()) {
+            if(slidesInput.getText().toString().isEmpty() || presentationName.getText().toString().isEmpty()) {
                 Snackbar.make(parentLayout, "Empty Text Field is not allowed.", Snackbar.LENGTH_LONG).show();
                 return;
             }
 
-            duration = Double.parseDouble(durationInput.getText().toString());
-            slides = Integer.parseInt(slidesInput.getText().toString());
-            name = presentationName.getText().toString();
+            int durationHour = hourPicker.getValue();
+            int durationMin = minutePicker.getValue();
+            int durationSec = secondPicker.getValue();
+
+            int slides = Integer.parseInt(slidesInput.getText().toString());
+            String name = presentationName.getText().toString();
 
             Intent intent = new Intent(MainActivity.this, slidemdfListActivity.class);
-            intent.putExtra("duration", duration);
+            intent.putExtra("durationHour", durationHour);
+            intent.putExtra("durationMin", durationMin);
+            intent.putExtra("durationSec", durationSec);
             intent.putExtra("numOfSlides", slides);
             intent.putExtra("name", name);
             startActivity(intent);

@@ -23,22 +23,47 @@
         android:textColor="@color/dimmedWhite"
         android:textColorHint="@color/colorAccent" />
 
-    <EditText
-        android:id="@+id/edit_duration"
-        android:inputType="numberDecimal"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/edit_text"
-        android:layout_marginTop="@dimen/large"
-        android:hint="@string/duration"
+    <TextView
+        android:id="@+id/durationText"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_below="@id/edit_name"
         android:textColor="@color/dimmedWhite"
-        android:textColorHint="@color/colorAccent"/>
+        android:textSize="@dimen/text_margin"
+        android:text="@string/enterDuration"/>
+
+    <NumberPicker
+        android:id="@+id/pickHour"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_below="@id/durationText"
+        android:solidColor="@color/colorPrimary"
+        android:background="@color/colorAccent" />
+
+    <NumberPicker
+        android:id="@+id/pickMin"
+        android:layout_toRightOf="@+id/pickHour"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_below="@id/durationText"
+        android:solidColor="@color/colorPrimary"
+        android:background="@color/colorAccent" />
+
+    <NumberPicker
+        android:id="@+id/pickSec"
+        android:layout_toRightOf="@+id/pickMin"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_below="@id/durationText"
+        android:solidColor="@color/colorPrimary"
+        android:background="@color/colorAccent" />
 
     <EditText
         android:id="@+id/edit_slides"
         android:inputType="number"
         android:layout_width="match_parent"
         android:layout_height="@dimen/edit_text"
-        android:layout_marginTop="@dimen/xtralarge"
+        android:layout_below="@id/pickHour"
         android:hint="@string/slides"
         android:textColor="@color/dimmedWhite"
         android:textColorHint="@color/colorAccent"/>

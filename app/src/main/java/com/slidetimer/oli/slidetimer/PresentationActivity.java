@@ -29,13 +29,17 @@ import android.widget.TextView;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.Locale;
 
 import static android.R.color.white;
 
 public class PresentationActivity extends AppCompatActivity implements View.OnClickListener {
 
     protected int numOfSlides;
-    private double totalDuration;
+    private int totalDurationInSec;
+    private int totalDurationHour;
+    private int totalDurationMin;
+    private int totalDurationSec;
     private Slide[] slides;
     private Slide currentSlide;
     private int currentPos;
@@ -55,6 +59,7 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
     private boolean notified;
     private NotificationManager mNotificationManager;
     private String presentationTitle;
+    private String formatTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +76,14 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         numOfSlides = b.getInt("numOfSlides");
-        totalDuration = b.getDouble("duration");
+        totalDurationHour = b.getInt("durationHour");
+        totalDurationMin = b.getInt("durationMin");
+        totalDurationSec = b.getInt("durationSec");
+
+        formatTime = "%02d:%02d:%02d";
+
+        totalDurationInSec = totalDurationHour * 3600 + totalDurationMin *60 +totalDurationSec;
+
         slides = slidemdfListActivity.slideArray;
 
         startStopBtn = (ImageButton) findViewById(R.id.start_timer_btn);
@@ -89,13 +101,7 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
         slideProg = (ProgressBar) findViewById(R.id.progressBarSlide);
         overallProg = (ProgressBar) findViewById(R.id.progressBarTotal);
 
-        /*
-        Animation an = new RotateAnimation(0.0f, 90.0f, 250f, 273f);
-        an.setFillAfter(true);
-        slideProg.startAnimation(an);
-        */
-
-        overallProg.setMax((int)(totalDuration * 60));
+        overallProg.setMax(totalDurationInSec);
 
         //init view for first slide
         currentPos = 0;
@@ -119,11 +125,10 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
         DecimalFormat df = new DecimalFormat("##");
         df.setRoundingMode(RoundingMode.CEILING);
 
-        int currentDurationFloored = (int) Math.floor(currentSlide.getDuration());
         //complicated way to load time from a double value
-        timerText.setText( currentDurationFloored + ":" + df.format((currentSlide.getDuration() - currentDurationFloored) * 60));
-        slideProg.setMax((int) (currentSlide.getDuration() * 60));
-        if (!(timerSlideRunning && timerTotalRunning)) totalTimerText.setText((int)totalDuration + ":" + df.format((totalDuration - (int)totalDuration) * 60));
+        timerText.setText(String.format(Locale.ENGLISH, formatTime, currentSlide.getHour(), currentSlide.getMin(), currentSlide.getSec()));
+        slideProg.setMax(currentSlide.getDurationSec());
+        if (!(timerSlideRunning && timerTotalRunning)) totalTimerText.setText(String.format(Locale.ENGLISH, formatTime, totalDurationHour, totalDurationMin, totalDurationSec));
 
         notified = false;
     }
@@ -166,16 +171,17 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
-    public CountDownTimer makeTimerForCurrentSlide(double dur){
-        final double duration = dur;
+    public CountDownTimer makeTimerForCurrentSlide(int dur){
+        final int duration = dur;
 
-         timerSlide = new CountDownTimer((int) (duration * 60 * 1000), 1000) {
+         timerSlide = new CountDownTimer((int) (duration * 1000), 1000) {
 
             @TargetApi(Build.VERSION_CODES.N)
             public void onTick(long millisUntilFinished) {
                 secsUntilFinishedSlides = millisUntilFinished / 1000;
-                timerText.setText( secsUntilFinishedSlides/60 + ":" + secsUntilFinishedSlides % 60);
-                slideProg.setProgress((int) (duration * 60 - secsUntilFinishedSlides), true);
+                timerText.setText(String.format(Locale.ENGLISH, formatTime ,secsUntilFinishedSlides/3600,
+                        (secsUntilFinishedSlides/60 %60), secsUntilFinishedSlides % 60));
+                slideProg.setProgress((int) (duration - secsUntilFinishedSlides), true);
 
                 //send notification if time for current slide is running out
                 if (secsUntilFinishedSlides < alarmBoundary && !notified){
@@ -189,7 +195,7 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
                     //update view to next slide and instantly start it's timer
                     updateViewForSlide(++currentPos);
                     timerSlide.cancel();
-                    timerSlide = makeTimerForCurrentSlide(currentSlide.getDuration()).start();
+                    timerSlide = makeTimerForCurrentSlide(currentSlide.getDurationSec()).start();
                 }
                 //if presentation is over because last slide is over
                 if (currentPos == numOfSlides -1){
@@ -246,6 +252,8 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
+        timerSlide.cancel();
+        timerTotal.cancel();
         return true;
     }
 
@@ -258,14 +266,14 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
                     updateViewForSlide(++currentPos);
                     if (timerSlideRunning) {
                         timerSlide.cancel();
-                        timerSlide = makeTimerForCurrentSlide(currentSlide.getDuration()).start();
+                        timerSlide = makeTimerForCurrentSlide(currentSlide.getDurationSec()).start();
                     }
                 }
                 break;
             case R.id.prev_btn: if (currentPos > 0) updateViewForSlide(--currentPos);break;
             case R.id.start_timer_btn:
                 Slide currentSlide = slides[currentPos];
-                final double currentDuration = currentSlide.getDuration();
+                final double currentDuration = currentSlide.getDurationSec();
 
                 //pause timer if it is running
                 if (timerSlideRunning || timerTotalRunning){
@@ -284,15 +292,15 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
                 else {
                     if (paused) {
                         //resume from pause
-                        timerSlide = makeTimerForCurrentSlide((double) secsUntilFinishedSlides/60);
+                        timerSlide = makeTimerForCurrentSlide((int)secsUntilFinishedSlides);
 
                         timerTotal = new CountDownTimer(secsUntilFinishedTotal * 1000, 1000) {
 
                             @TargetApi(Build.VERSION_CODES.N)
                             public void onTick(long millisUntilFinished) {
                                 secsUntilFinishedTotal = millisUntilFinished / 1000;
-                                totalTimerText.setText((int) secsUntilFinishedTotal/60 + ":" + secsUntilFinishedTotal % 60);
-                                overallProg.setProgress((int) (totalDuration * 60 - secsUntilFinishedTotal), true);
+                                totalTimerText.setText(String.format(Locale.ENGLISH, formatTime, secsUntilFinishedTotal/3600, (secsUntilFinishedTotal/60 %60), secsUntilFinishedTotal % 60));
+                                overallProg.setProgress((int) (totalDurationInSec - secsUntilFinishedTotal), true);
 
                                 if (secsUntilFinishedTotal < alarmBoundary) {
                                     overallProg.setBackgroundColor(getResources().getColor(R.color.colorRedAlarm));
@@ -308,17 +316,17 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
                         paused = false;
                     } else {
                         //first start
-                        timerSlide = makeTimerForCurrentSlide(currentDuration);
+                        timerSlide = makeTimerForCurrentSlide((int)currentDuration);
 
                         //if we start the whole presentation, make custom timer for total duration
                         if (currentPos == 0) {
-                            timerTotal = new CountDownTimer((int) (totalDuration * 60 * 1000), 1000) {
+                            timerTotal = new CountDownTimer((int) (totalDurationInSec * 1000), 1000) {
 
                                 @TargetApi(Build.VERSION_CODES.N)
                                 public void onTick(long millisUntilFinished) {
                                     secsUntilFinishedTotal = millisUntilFinished / 1000;
-                                    totalTimerText.setText((int) secsUntilFinishedTotal/60 + ":" + secsUntilFinishedTotal % 60);
-                                    overallProg.setProgress((int) (totalDuration * 60 - secsUntilFinishedTotal), true);
+                                    totalTimerText.setText(String.format(Locale.ENGLISH, formatTime, secsUntilFinishedTotal/3600, (secsUntilFinishedTotal/60 % 60), secsUntilFinishedTotal % 60));
+                                    overallProg.setProgress((int) (totalDurationInSec - secsUntilFinishedTotal), true);
 
                                     if (secsUntilFinishedTotal < alarmBoundary) {
                                         overallProg.setBackgroundColor(getResources().getColor(R.color.colorRedAlarm));

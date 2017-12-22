@@ -15,6 +15,7 @@
     <string name="name">Name of your Presentation</string>
     <string name="title_activity_presentation">PresentationActivity</string>
     <string name="action_settings">Settings</string>
+    <string name="enterDuration">Enter Duration in Hours/Min/Sec</string>
     <string name="section_format">Slide: %1$d/%2$d</string>
     <string name="title_slidemdf_list">Slides</string>
     <string name="title_slidemdf_detail">slide_mdf Detail</string>

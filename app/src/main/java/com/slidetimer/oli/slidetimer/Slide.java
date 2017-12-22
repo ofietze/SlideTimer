@@ -8,24 +8,42 @@ import java.io.Serializable;
 
 public class Slide implements Serializable {
 
-    String title;
-    double duration;
+    private String title;
+    private int durationHour;
+    private int durationMin;
+    private int durationSec;
 
-    Slide(String slideTitle, double slideDuration) {
+    Slide(String slideTitle, int durHour, int durMin, int durSec) {
         title = slideTitle;
-        duration = slideDuration;
+        durationHour = durHour;
+        durationMin = durMin;
+        durationSec = durSec;
     }
 
-    public double getDuration() {
-        return duration;
+    public int getHour() {
+        return durationHour;
+    }
+
+    public int getMin(){
+        return durationMin;
+    }
+
+    public int getSec(){
+        return durationSec;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setDuration(double newDuration){
-        duration = newDuration;
+    public void setDuration(int newDurationHour, int newDurationMin, int newDurationSec){
+        durationHour = newDurationHour;
+        durationMin = newDurationMin;
+        durationSec = newDurationSec;
+    }
+
+    public int getDurationSec(){
+        return durationSec + durationMin * 60 + durationHour * 3600;
     }
 
     public void setTitle(String newTitle){
