@@ -34,7 +34,7 @@ public class slidemdfDetailFragment extends Fragment {
     private Slide aSlide;
 
     private String  formatTitleAndTime = "%s - %02d:%02d:%02d";
-    private final String durTitle = "Duration of this slide";
+    private final String durTitle = "Slide duration";
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the

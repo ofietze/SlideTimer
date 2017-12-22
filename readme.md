@@ -1,10 +1,10 @@
 ![header](img/header.png)
- ![screenshot4](img/Screenshot_4.png)
- ![screenshot1](img/Screenshot_1.png)
+ ![screenshot4](img/screen1.png)
+ ![screenshot1](img/screen2.png)
 
- 
- ![screenshot2](img/Screenshot_2.png)
- ![screenshot5](img/Screenshot_5.png)
+
+ ![screenshot2](img/screen3.png)
+ ![screenshot5](img/screen4.png)
 
 
  SlideTimer helps you to time your presentation slide by slide.
@@ -12,6 +12,11 @@
 
 
 # Features
-After you entered your presentation's details you get a list to edit each slide individually.
-When the slide perfect editing is done you can go to the presentation view and are ready to go.
-On the top right are settings that determine when a notification should come.
+After you entered your Presentation's Details you get a list to edit each Slide individually.
+When the slide-perfect editing is done you can go to the Presentation view and are ready to go.
+On the top right are Settings that determine when a notification should come.
+
+# Version 2.0 released
+Now the Time is displayed in a nice HH/MM/SS Layout throughout the App.
+There are also NumberPickers to edit the Duration for each Slide even better.
+Plus some minor changes.
