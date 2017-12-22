@@ -1,7 +1,8 @@
 ![header](img/header.png)
 # Features
-After you entered your Presentation's Details you get a list to edit each Slide individually.
-When the slide-perfect editing is done you can go to the Presentation view and are ready to go.
+SlideTimer is the way to go to perfect your Presentations.
+First you enter your Presentation's Details and get a list to edit each Slide individually.
+After the slide-perfect editing is done you can go to the Presentation view and are ready to go.
 On the top right are Settings that determine when a notification should come.
 
 # Version 2.0 released
