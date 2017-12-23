@@ -199,7 +199,8 @@ public class PresentationActivity extends AppCompatActivity implements View.OnCl
                 }
                 //if presentation is over because last slide is over
                 if (currentPos == numOfSlides -1){
-                    timerText.setText("Presentation time is over.");
+                    timerText.setTextSize(25);
+                    timerText.setText("Slide time is over.");
                     mNotificationManager.cancelAll();
                 }
             }
